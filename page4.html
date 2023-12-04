@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>page4</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+</head>
+<nav>
+  <a href="/" aria-current="page">login</a>
+  <a href="/page2.html">dashboard</a>
+  <a href="/page3.html" aria-current="page">current</a>
+  <a href="/page4.html" aria-current="page">budget</a>
+</nav>
+<body>
+  <main>
+    <div>
+      <label for="monthSelect">Select Month:</label>
+      <select id="monthSelect">
+        <option value="January">January</option>
+        <option value="February">February</option>
+        <option value="March">March</option>
+        <option value="April">April</option>
+        <option value="May">May</option>
+        <option value="June">June</option>
+        <option value="July">July</option>
+        <option value="August">August</option>
+        <option value="September">September</option>
+        <option value="October">October</option>
+        <option value="November">November</option>
+        <option value="December">December</option>
+      </select>
+      <label for="yearSelect">Select Year:</label>
+      <select id="yearSelect">
+        <option value="2023">2023</option>
+        <option value="2022">2022</option>
+        <option value="2021">2021</option>
+        <option value="2020">2020</option>
+        <option value="2019">2019</option>
+      </select>
+      <button onclick="updateChartData()">Update Chart Data</button>
+    </div>
+    <canvas id="myChart2" width="400" height="400"></canvas>
+    <a href="/page2.html" class="btn btn-primary mt-3">Return to Dashboard</a>
+  </main>
+
+  <script>
+  
+  const colors = ['#9FDDFF', '#A5FF9D', '#C49FFF', '#FF9D9D', '#FFC09D', '#FFE49F'];
+
+function updateChartData() {
+  const selectedMonth = document.getElementById('monthSelect').value;
+  const selectedYear = document.getElementById('yearSelect').value;
+      let dataForMonths = {
+        'January_2023': [30, 70],
+        'February_2023': [20, 80],
+        'March_2023': [25, 25, 25, 25],
+        'April_2023': [25, 75],
+        'May_2023': [30, 30, 40],
+        'June_2023': [70, 30],
+        'July_2023': [50, 50],
+        'August_2023': [40, 60],
+        'September_2023': [45, 55],
+        'October_2023': [35, 65],
+        'November_2023': [55, 45],
+        'December_2023': [60, 40],
+
+        'January_2022': [40, 60],
+        'February_2022': [45, 55],
+        'March_2022': [35, 65],
+        'April_2022': [55, 45],
+        'May_2022': [60, 40],
+        'June_2022': [30, 70],
+        'July_2022': [20, 80],
+        'August_2022': [25, 25, 25, 25],
+        'September_2022': [25, 75],
+        'October_2022': [30, 30, 40],
+        'November_2022': [70, 30],
+        'December_2022': [50, 50],
+
+        'January_2021': [40, 60],
+        'February_2021': [45, 55],
+        'March_2021': [35, 65],
+        'April_2021': [55, 45],
+        'May_2021': [60, 40],
+        'June_2021': [30, 70],
+        'July_2021': [20, 80],
+        'August_2021': [25, 25, 25, 25],
+        'September_2021': [25, 75],
+        'October_2021': [30, 30, 40],
+        'November_2021': [70, 30],
+        'December_2021': [50, 50],
+
+        'January_2020': [40, 60],
+        'February_2020': [45, 55],
+        'March_2020': [35, 65],
+        'April_2020': [55, 45],
+        'May_2020': [60, 40],
+        'June_2020': [30, 70],
+        'July_2020': [20, 80],
+        'August_2020': [25, 25, 25, 25],
+        'September_2020': [25, 75],
+        'October_2020': [30, 30, 40],
+        'November_2020': [70, 30],
+        'December_2020': [50, 50],
+
+        'January_2019': [45, 55],
+        'February_2019': [35, 65],
+        'March_2019': [55, 45],
+        'April_2019': [60, 40],
+        'May_2019': [30, 70],
+        'June_2019': [20, 80],
+        'July_2019': [25, 25, 25, 25],
+        'August_2019': [25, 75],
+        'September_2019': [30, 30, 40],
+        'October_2019': [70, 30],
+        'November_2019': [50, 50],
+        'December_2019': [50, 50],
+      };
+
+      const key = `${selectedMonth}_${selectedYear}`;
+      const selectedData = dataForMonths[key] || [0, 0]; // Default data if not found
+
+      localStorage.setItem('chart2Data', JSON.stringify(selectedData));
+      localStorage.setItem('selectedMonth', selectedMonth);
+      localStorage.setItem('selectedYear', selectedYear);
+
+      renderChart(selectedData);
+    }
+
+    function renderChart(selectedData) {
+      const ctx2 = document.getElementById('myChart2').getContext('2d');
+
+      // Destroy previous chart instance if it exists
+      if (window.chart2) {
+        window.chart2.destroy();
+      }
+
+      window.chart2 = new Chart(ctx2, {
+        type: 'pie',
+        data: {
+          labels: ['Label 1', 'Label 2'],
+          datasets: [{
+            data: selectedData,
+            backgroundColor: colors,
+            hoverBackgroundColor: colors
+          }]
+        }
+      });
+    }
+
+    // Display chart on page load if data exists in localStorage
+    document.addEventListener('DOMContentLoaded', function() {
+      const storedChartData = JSON.parse(localStorage.getItem('chart2Data'));
+      if (storedChartData) {
+        renderChart(storedChartData);
+      }
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>
