@@ -1,102 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <title>History</title>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width" />
-  <link rel="stylesheet" href="styles.css" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-</head>
-<body>
-  <nav>
-    <a href="/" aria-current="page">login</a>
-    <a href="/dashboard.html">Dashboard</a>
-    <a href="/current.html">Current Budget</a>
-    <a href="/history.html">Budget History</a>
-  </nav>
-  <main>
-    <div>
-      <label for="monthSelect">Select Month:</label>
-      <select id="monthSelect">
-        <option value="January">January</option>
-        <option value="February">February</option>
-        <option value="March">March</option>
-        <option value="April">April</option>
-        <option value="May">May</option>
-        <option value="June">June</option>
-        <option value="July">July</option>
-        <option value="August">August</option>
-        <option value="September">September</option>
-        <option value="October">October</option>
-        <option value="November">November</option>
-        <option value="December">December</option>
-        <!-- Add other month options as needed -->
-      </select>
-      <label for="yearSelect">Select Year:</label>
-      <select id="yearSelect">
-        <option value="2023">2023</option>
-        <option value="2022">2022</option>
-        <option value="2021">2021</option>
-        <option value="2020">2020</option>
-        <option value="2019">2019</option>
-        <!-- Add year options as needed -->
-      </select>
-      <button onclick="updateChartData()">Update Chart Data</button>
-    </div>
-    <canvas id="myChartHistory" width="400" height="400"></canvas>
-    <a href="/dashboard.html" class="btn btn-primary mt-3">Return to Dashboard</a>
-  </main>
+  <head>
+    <title>History</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+  </head>
+  <body>
+    <nav>
+      <a href="/">login</a>
+      <a href="/dashboard.html">Dashboard</a>
+      <a href="/current.html">Current Budget</a>
+      <a href="/history.html">Budget History</a>
+    </nav>
+    <main>
+      <div>
+        <label for="monthSelect">Select Month:</label>
+        <select id="monthSelect">
+          <option value="January">January</option>
+          <option value="February">February</option>
+          <option value="March">March</option>
+          <option value="April">April</option>
+          <option value="May">May</option>
+          <option value="June">June</option>
+          <option value="July">July</option>
+          <option value="August">August</option>
+          <option value="September">September</option>
+          <option value="October">October</option>
+          <option value="November">November</option>
+          <option value="December">December</option>
+        </select>
+        <label for="yearSelect">Select Year:</label>
+        <select id="yearSelect">
+          <option value="2023">2023</option>
+          <option value="2022">2022</option>
+          <option value="2021">2021</option>
+          <option value="2020">2020</option>
+          <option value="2019">2019</option>
+        </select>
+        <button onclick="updateChartData()">Update Chart Data</button>
+      </div>
+      <canvas id="myChartHistory" width="400" height="400"></canvas>
+      <a href="/dashboard.html" class="btn btn-primary mt-3"
+        >Return to Dashboard</a
+      >
+    </main>
 
-  <script>
-    const colors = ['#9FDDFF', '#A5FF9D', '#C49FFF', '#FF9D9D', '#FFC09D', '#FFE49F'];
+    <script>
+      const colors = [
+        "#9FDDFF",
+        "#A5FF9D",
+        "#C49FFF",
+        "#FF9D9D",
+        "#FFC09D",
+        "#FFE49F",
+      ];
 
-    function updateChartData() {
-      // Retrieve data from localStorage of the current page
-      const selectedData = JSON.parse(localStorage.getItem('chartDataWithColors'));
-      const selectedMonth = localStorage.getItem('selectedMonth');
-      const selectedYear = localStorage.getItem('selectedYear');
+      function updateChartData() {
+        // Retrieve data from localStorage of the current page
+        const selectedData = JSON.parse(
+          localStorage.getItem("chartDataWithColors")
+        );
+        const selectedMonth = localStorage.getItem("selectedMonth");
+        const selectedYear = localStorage.getItem("selectedYear");
 
-      // Get the specific data for the selected month and year from the current page
-      let dataForHistory = {};
-      if (selectedData && selectedMonth && selectedYear) {
-        const key = `${selectedMonth}_${selectedYear}`;
-        const currentData = selectedData.find(item => item.key === key);
-        if (currentData) {
-          dataForHistory = currentData.data;
+        // Get the specific data for the selected month and year from the current page
+        let dataForHistory = {};
+        if (selectedData && selectedMonth && selectedYear) {
+          const key = `${selectedMonth}_${selectedYear}`;
+          const currentData = selectedData.find((item) => item.key === key);
+          if (currentData) {
+            dataForHistory = currentData.data;
+          }
         }
+
+        renderChart(dataForHistory);
       }
 
-      renderChart(dataForHistory);
-    }
+      function renderChart(dataForHistory) {
+        const ctxHistory = document
+          .getElementById("myChartHistory")
+          .getContext("2d");
 
-    function renderChart(dataForHistory) {
-      const ctxHistory = document.getElementById('myChartHistory').getContext('2d');
+        // Destroy previous chart instance if it exists
+        if (window.chartHistory) {
+          window.chartHistory.destroy();
+        }
 
-      // Destroy previous chart instance if it exists
-      if (window.chartHistory) {
-        window.chartHistory.destroy();
+        window.chartHistory = new Chart(ctxHistory, {
+          type: "pie",
+          data: {
+            labels: [],
+            datasets: [
+              {
+                data: dataForHistory,
+                backgroundColor: colors,
+                hoverBackgroundColor: colors,
+              },
+            ],
+          },
+        });
       }
 
-      window.chartHistory = new Chart(ctxHistory, {
-        type: 'pie',
-        data: {
-          labels: [],
-          datasets: [{
-            data: dataForHistory,
-            backgroundColor: colors,
-            hoverBackgroundColor: colors
-          }]
-        }
+      // Display chart on page load if data exists in localStorage
+      document.addEventListener("DOMContentLoaded", function () {
+        updateChartData();
       });
-    }
+    </script>
 
-    // Display chart on page load if data exists in localStorage
-    document.addEventListener('DOMContentLoaded', function() {
-      updateChartData();
-    });
-  </script>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-</body>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>
