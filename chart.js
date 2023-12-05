@@ -1,16 +1,7 @@
-// Current Arrays
-let currentCategory = [];
 let currentAmount = [];
 let currentColor = [];
+let currentCategory = [];
 let currentDescription = [];
-let currentIncome = 0;
-
-// Budget Arrays
-let budgetAmount = [];
-let budgetColor = [];
-let budgetCategory = [];
-let budgetDescription = [];
-let budgetIncome = 0;
 
 const addFinanceButton = document.getElementById("addFinance");
 const resetFinanceData = document.getElementById("resetData");
@@ -51,100 +42,62 @@ let colorNames = [
 ];
 
 // Variables for local storage of Current Finance Chart
-let storageCurrentAmount =
-  JSON.parse(localStorage.getItem("currentAmount")) || [];
-let storageCurrentColor =
-  JSON.parse(localStorage.getItem("currentColor")) || [];
-let storageCurrentCategory =
-  JSON.parse(localStorage.getItem("currentCategory")) || [];
-let storageCurrentDescription =
-  JSON.parse(localStorage.getItem("currentDescription")) || [];
-let storageCurrentIncome =
-  JSON.parse(localStorage.getItem("currentIncome")) || [];
+let storageCurrent = JSON.parse(localStorage.getItem("currentData")) || [];
 
-// Variables for local storage of Budget Finance Chart
-let storageBudgetAmount =
-  JSON.parse(localStorage.getItem("budgetAmount")) || [];
-let storageBudgetColor = JSON.parse(localStorage.getItem("budgetColor")) || [];
-let storageBudgetCategory =
-  JSON.parse(localStorage.getItem("budgetCategory")) || [];
-let storageBudgetDescription =
-  JSON.parse(localStorage.getItem("budgetDescription")) || [];
-let storageBudgetIncome =
-  JSON.parse(localStorage.getItem("budgetIncome")) || [];
+function setLocalStorage(userAmount, userColor, userCategory, userDescription) {
+  storageCurrent.push({
+    amount: userAmount,
+    color: userColor,
+    category: userCategory,
+    description: userDescription,
+  });
 
-// Populate Local Data into Current Data
-function pullCurrentLocalData() {
-  currentAmount = storageCurrentAmount;
-  currentColor = storageCurrentColor;
-  currentCategory = storageCurrentCategory;
-  currentDescription = storageCurrentDescription;
-  currentIncome = storageCurrentIncome;
+  localStorage.setItem("currentData", JSON.stringify(storageCurrent));
 }
 
-function setLocalStorage() {
-  localStorage.setItem("currentAmount", JSON.stringify(currentAmount));
-  localStorage.setItem("currentColor", JSON.stringify(currentColor));
-  localStorage.setItem("currentCategory", JSON.stringify(currentCategory));
-  localStorage.setItem(
-    "currentDescription",
-    JSON.stringify(currentDescription)
+function setArrays() {
+  currentCategory = storageCurrent.map((item) => item.category);
+  currentAmount = storageCurrent.map((item) => item.amount);
+  currentColor = storageCurrent.map((item) => item.color);
+  currentDescription = storageCurrent.map((item) => item.description);
+}
+
+function updateLocalStorage() {
+  resetData();
+
+  storageCurrent.push({
+    amount: currentAmount,
+    color: currentColor,
+    category: currentCategory,
+    description: currentDescription,
+  });
+
+  storageCurrent.localStorage.setItem(
+    "currentData",
+    JSON.stringify(storageCurrent)
   );
 }
 
 // Pull input values from user and sets them
-function addFinance(type) {
-  switch (type) {
-    case "current":
-      amount = currentAmount;
-      color = currentColor;
-      category = currentCategory;
-      description = currentDescription;
-      break;
-    case "budget":
-      amount = budgetAmount;
-      color = budgetColor;
-      category = budgetCategory;
-      description = budgetDescription;
-      break;
-    default:
-      break;
-  }
+function addFinance() {
+  let userAmount = financeAmount.value;
+  let userColor = financeColor.value;
+  let userCategory = financeCategory.value;
+  let userDescription = financeDescription.value;
 
-  amount.push(financeAmount.value);
-  color.push(financeColor.value);
-  category.push(financeCategory.value);
-  description.push(financeDescription.value);
+  setLocalStorage(userAmount, userColor, userCategory, userDescription);
+  setArrays();
 }
-
-// Add Chart Data
-function addCurrentFinanceData() {
-  pullCurrentLocalData();
-
-  // Pulls input values from the user and sets them to the written code
-  addFinance("current");
-
-  // Adds input values into local storage
-  setLocalStorage();
-}
-
-// Income
-function addIncome(type) {}
 
 // Delete All Local Storage
 function resetData() {
-  localStorage.removeItem("currentAmount");
-  localStorage.removeItem("currentColor");
-  localStorage.removeItem("currentCategory");
-  localStorage.removeItem("currentDescription");
+  localStorage.removeItem("currentData");
 
   location.reload();
 }
 
-// Populate Finance Table
-function createFinanceTable() {
-  pullCurrentLocalData();
-
+// Populate Current Finance Table
+function createCurrentFinanceTable() {
   for (i = 0; i < currentAmount.length; i++) {
     let row = currentFinanceTable.insertRow();
 
@@ -153,35 +106,26 @@ function createFinanceTable() {
     let name = row.insertCell(2);
     let amount = row.insertCell(3);
     let category = row.insertCell(4);
-    let edit = row.insertCell(5);
+    let deleteCell = row.insertCell(5);
 
     index.textContent = i + 1;
-    color.backgroundColor = currentColor[i];
+    color.style.backgroundColor = currentColor[i];
     name.textContent = currentDescription[i];
     amount.textContent = currentAmount[i];
     category.textContent = currentCategory[i];
 
-    let editArray = document.createElement("button");
-    editArray.textContent = "Delete";
+    let deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+    deleteButton.addEventListener("click", function () {
+      currentColor.splice(i, 1);
+      currentDescription.splice(i, 1);
+      currentAmount.splice(i, 1);
+      currentCategory.splice(i, 1);
 
-    editArray.addEventListener("click", function () {
-      currentAmount.splice(index, 1);
-      currentColor.splice(index, 1);
-      currentCategory.splice(index, 1);
-      currentDescription.splice(index, 1);
-
-      localStorage.setItem("currentAmount", JSON.stringify(currentAmount));
-      localStorage.setItem("currentColor", JSON.stringify(currentColor));
-      localStorage.setItem("currentCategory", JSON.stringify(currentCategory));
-      localStorage.setItem(
-        "currentDescription",
-        JSON.stringify(currentDescription)
-      );
-
-      createCurrentChart();
+      updateLocalStorage();
     });
 
-    edit.appendChild(editArray);
+    deleteCell.appendChild(deleteButton);
   }
 }
 
@@ -190,11 +134,11 @@ function createCurrentChart() {
   new Chart(currentFinances, {
     type: "pie",
     data: {
-      labels: storageCurrentCategory,
+      labels: currentCategory,
       datasets: [
         {
-          data: storageCurrentAmount,
-          backgroundColor: storageCurrentColor,
+          data: currentAmount,
+          backgroundColor: currentColor,
         },
       ],
     },
