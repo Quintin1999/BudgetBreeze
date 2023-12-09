@@ -263,6 +263,8 @@ function addFinance() {
   }
 
   createChart();
+
+  location.reload();
 }
 
 function clearFinanceTable() {
@@ -404,7 +406,6 @@ document.querySelector("table").addEventListener("click", function (event) {
 
     if (rowIndex <= incomeLength) {
       rowIndex = rowIndex - 1;
-      console.log(rowIndex);
 
       let removedIncome = parseFloat(
         currentStorage.months[monthIndex].income[rowIndex]
@@ -421,12 +422,12 @@ document.querySelector("table").addEventListener("click", function (event) {
 
       localStorage.setItem("currentStorage", JSON.stringify(currentStorage));
     } else {
-      rowIndex -= incomeLength - 1;
+      indexPosition = rowIndex - incomeLength - 1;
 
-      currentStorage.months[monthIndex].amount.splice(rowIndex, 1);
-      currentStorage.months[monthIndex].color.splice(rowIndex, 1);
-      currentStorage.months[monthIndex].category.splice(rowIndex, 1);
-      currentStorage.months[monthIndex].description.splice(rowIndex, 1);
+      currentStorage.months[monthIndex].amount.splice(indexPosition, 1);
+      currentStorage.months[monthIndex].color.splice(indexPosition, 1);
+      currentStorage.months[monthIndex].category.splice(indexPosition, 1);
+      currentStorage.months[monthIndex].description.splice(indexPosition, 1);
 
       localStorage.setItem("currentStorage", JSON.stringify(currentStorage));
     }
@@ -435,4 +436,6 @@ document.querySelector("table").addEventListener("click", function (event) {
   currentChart.update();
   clearFinanceTable();
   createFinanceTable();
+
+  location.reload();
 });
