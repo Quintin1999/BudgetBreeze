@@ -22,36 +22,47 @@
     </nav>
     <main>
       <div>
-        <label for="monthSelect">Select Month:</label>
-        <select id="monthSelect">
-          <option value="January">January</option>
-          <option value="February">February</option>
-          <option value="March">March</option>
-          <option value="April">April</option>
-          <option value="May">May</option>
-          <option value="June">June</option>
-          <option value="July">July</option>
-          <option value="August">August</option>
-          <option value="September">September</option>
-          <option value="October">October</option>
-          <option value="November">November</option>
-          <option value="December">December</option>
+        <label for="month-select">Select Month:</label>
+        <select id="month-select">
+          <option value="january">January</option>
+          <option value="february">February</option>
+          <option value="march">March</option>
+          <option value="april">April</option>
+          <option value="may">May</option>
+          <option value="june">June</option>
+          <option value="july">July</option>
+          <option value="august">August</option>
+          <option value="september">September</option>
+          <option value="october">October</option>
+          <option value="november">November</option>
+          <option value="december">December</option>
         </select>
-        <label for="yearSelect">Select Year:</label>
-        <select id="yearSelect">
+        <label for="year-select">Select Year:</label>
+        <select id="year-select">
           <option value="2023">2023</option>
           <option value="2022">2022</option>
           <option value="2021">2021</option>
           <option value="2020">2020</option>
           <option value="2019">2019</option>
         </select>
-        <button onclick="updateChartData()">Update Chart Data</button>
       </div>
-      <canvas id="myChartHistory" width="400" height="400"></canvas>
-      <a href="/dashboard.html" class="btn btn-primary mt-3"
-        >Return to Dashboard</a
-      >
+      <canvas id="budget-finances" width="400" height="400"></canvas>
+
+      <table id="finance-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Color</th>
+            <th>Finance Name</th>
+            <th>Amount</th>
+            <th>Category</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </main>
-    <script></script>
+    <script src="chart.js"></script>
+    <script src="history.js"></script>
   </body>
 </html>

@@ -1,7 +1,20 @@
 let month = "january";
 
+let currentChart = new Chart(currentFinances, {
+  type: "pie",
+  data: {
+    labels: [],
+    datasets: [
+      {
+        data: [],
+        backgroundColor: [],
+      },
+    ],
+  },
+});
+
 document.addEventListener("DOMContentLoaded", function () {
-  createCurrentChart(month);
+  createCurrentChart(month, currentChart);
   createFinanceTable(month);
 
   console.log(currentStorage);

@@ -1,11 +1,11 @@
 const addFinanceButton = document.getElementById("addFinance");
 const resetFinanceData = document.getElementById("resetData");
 
-const currentFinanceTable = document.getElementById("current-finance-table");
+const currentFinanceTable = document.getElementById("finance-table");
 
 // Variables for Pie Charts
-const currentFinances = document.getElementById("currentFinances");
-const budgetFinances = document.getElementById("budgetFinances");
+const currentFinances = document.getElementById("current-finances");
+const budgetFinances = document.getElementById("budget-finances");
 
 // Variables for Adding Data
 const financeAmount = document.getElementById("finance-amount");
@@ -386,20 +386,7 @@ function createFinanceTable(month) {
   }
 }
 
-let currentChart = new Chart(currentFinances, {
-  type: "pie",
-  data: {
-    labels: [],
-    datasets: [
-      {
-        data: [],
-        backgroundColor: [],
-      },
-    ],
-  },
-});
-
-function createCurrentChart(month) {
+function createCurrentChart(month, chart) {
   let monthIndex = setMonthIndex(month);
 
   let chartColor = [];
@@ -446,68 +433,14 @@ function createCurrentChart(month) {
     chartLabel = currentStorage.months[monthIndex].category;
   }
 
-  currentChart.data.datasets[0].backgroundColor = chartColor;
-  currentChart.data.datasets[0].data = chartAmount;
-  currentChart.data.labels = chartLabel;
+  chart.data.datasets[0].backgroundColor = chartColor;
+  chart.data.datasets[0].data = chartAmount;
+  chart.data.labels = chartLabel;
 
-  currentChart.update();
+  chart.update();
 }
 
 function getRowIndex(element) {
   let row = element.closest("tr");
   return Array.from(row.parentNode.children).indexOf(row);
-}
-
-function createHistoryChart(month) {
-  let monthIndex = setMonthIndex(month);
-
-  let chartColor = [];
-  let chartAmount = [];
-  let chartLabel = [];
-
-  let leftover = parseFloat(currentStorage.months[monthIndex].leftoverIncome);
-
-  calculateLeftoverIncome(month);
-
-  if (leftover > 0) {
-    chartColor = currentStorage.months[monthIndex].color.map((color) => {
-      return color;
-    });
-    chartAmount = currentStorage.months[monthIndex].amount.map((amount) => {
-      return amount;
-    });
-    chartLabel = currentStorage.months[monthIndex].category.map((category) => {
-      return category;
-    });
-
-    chartColor.push("#808080");
-    chartAmount.push(leftover);
-    chartLabel.push("leftover income");
-  } else if (leftover < 0) {
-    let posLeftover = -leftover;
-
-    chartColor = currentStorage.months[monthIndex].color.map((color) => {
-      return color;
-    });
-    chartAmount = currentStorage.months[monthIndex].amount.map((amount) => {
-      return amount;
-    });
-    chartLabel = currentStorage.months[monthIndex].category.map((category) => {
-      return category;
-    });
-
-    chartColor.push("#000000");
-    chartAmount.push(posLeftover);
-    chartLabel.push("negative income");
-  } else {
-    chartColor = currentStorage.months[monthIndex].color;
-    chartAmount = currentStorage.months[monthIndex].amount;
-    chartLabel = currentStorage.months[monthIndex].category;
-  }
-
-  historyChart.data.datasets[0].backgroundColor = chartColor;
-  historyChart.data.datasets[0].data = chartAmount;
-  historyChart.data.labels = chartLabel;
-
-  historyChart.update();
 }
