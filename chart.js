@@ -3,9 +3,6 @@ const resetFinanceData = document.getElementById("resetData");
 
 const currentFinanceTable = document.getElementById("current-finance-table");
 
-const currentFinanceElement = document.getElementById("currentFinances");
-const budgetFinanceElement = document.getElementById("budgetFinances");
-
 // Variables for Pie Charts
 const currentFinances = document.getElementById("currentFinances");
 const budgetFinances = document.getElementById("budgetFinances");
@@ -15,8 +12,6 @@ const financeAmount = document.getElementById("finance-amount");
 const financeColor = document.getElementById("finance-color");
 const financeCategory = document.getElementById("finance-category");
 const financeDescription = document.getElementById("finance-description");
-
-let monthIndex = 0;
 
 // Color Variables for Pie Chart
 let hexCodes = [
@@ -38,12 +33,12 @@ let colorNames = [
   "light gray",
 ];
 
-// Initialization data that insures all data is stored properly
+// Initialization data that insures all data is stored properly.
 let currentInitial = {
   months: [
     {
       amount: [1],
-      color: [hexCodes[6]],
+      color: ["#CCCCCC"],
       description: ["null"],
       category: ["null"],
       income: [],
@@ -54,7 +49,7 @@ let currentInitial = {
     },
     {
       amount: [1],
-      color: [hexCodes[6]],
+      color: ["#CCCCCC"],
       description: ["null"],
       category: ["null"],
       income: [],
@@ -65,7 +60,7 @@ let currentInitial = {
     },
     {
       amount: [1],
-      color: [hexCodes[6]],
+      color: ["#CCCCCC"],
       description: ["null"],
       category: ["null"],
       income: [],
@@ -76,7 +71,7 @@ let currentInitial = {
     },
     {
       amount: [1],
-      color: [hexCodes[6]],
+      color: ["#CCCCCC"],
       description: ["null"],
       category: ["null"],
       income: [],
@@ -87,7 +82,7 @@ let currentInitial = {
     },
     {
       amount: [1],
-      color: [hexCodes[6]],
+      color: ["#CCCCCC"],
       description: ["null"],
       category: ["null"],
       income: [],
@@ -98,7 +93,7 @@ let currentInitial = {
     },
     {
       amount: [1],
-      color: [hexCodes[6]],
+      color: ["#CCCCCC"],
       description: ["null"],
       category: ["null"],
       income: [],
@@ -109,7 +104,7 @@ let currentInitial = {
     },
     {
       amount: [1],
-      color: [hexCodes[6]],
+      color: ["#CCCCCC"],
       description: ["null"],
       category: ["null"],
       income: [],
@@ -120,7 +115,7 @@ let currentInitial = {
     },
     {
       amount: [1],
-      color: [hexCodes[6]],
+      color: ["#CCCCCC"],
       description: ["null"],
       category: ["null"],
       income: [],
@@ -131,7 +126,7 @@ let currentInitial = {
     },
     {
       amount: [1],
-      color: [hexCodes[6]],
+      color: ["#CCCCCC"],
       description: ["null"],
       category: ["null"],
       income: [],
@@ -142,7 +137,7 @@ let currentInitial = {
     },
     {
       amount: [1],
-      color: [hexCodes[6]],
+      color: ["#CCCCCC"],
       description: ["null"],
       category: ["null"],
       income: [],
@@ -153,7 +148,7 @@ let currentInitial = {
     },
     {
       amount: [1],
-      color: [hexCodes[6]],
+      color: ["#CCCCCC"],
       description: ["null"],
       category: ["null"],
       income: [],
@@ -164,7 +159,7 @@ let currentInitial = {
     },
     {
       amount: [1],
-      color: [hexCodes[6]],
+      color: ["#CCCCCC"],
       description: ["null"],
       category: ["null"],
       income: [],
@@ -176,23 +171,22 @@ let currentInitial = {
   ],
 };
 
+// Initializes local storage and grabs all local storage.
 let currentStorage = JSON.parse(localStorage.getItem("currentStorage"));
-console.log(currentStorage);
-let totalIncome = parseFloat(currentStorage.months[monthIndex].monthlyIncome);
-let leftover = parseFloat(currentStorage.months[monthIndex].leftoverIncome);
-let expenses = parseFloat(currentStorage.months[monthIndex].expenses);
 
+// Initializes local storage to initialized data if there is no data in local storage.
 if (currentStorage === null || currentStorage === "") {
   localStorage.setItem("currentStorage", JSON.stringify(currentInitial));
 } else {
 }
 
+// Removes all local storage data and resets it to the initialized data.
 function resetCurrentStorage() {
   localStorage.removeItem("currentStorage");
-
   localStorage.setItem("currentStorage", JSON.stringify(currentInitial));
 }
 
+// Checks if the local storage data is the initialized data
 function isNullPresent(monthIndex) {
   var month = currentStorage.months[monthIndex];
 
@@ -203,6 +197,7 @@ function isNullPresent(monthIndex) {
   }
 }
 
+// Removes the filler initial data
 function removeInitialValue(monthIndex) {
   currentStorage.months[monthIndex].amount.splice(0, 1);
   currentStorage.months[monthIndex].color.splice(0, 1);
@@ -210,17 +205,28 @@ function removeInitialValue(monthIndex) {
   currentStorage.months[monthIndex].description.splice(0, 1);
 }
 
-function calculateLeftoverIncome() {
-  let leftover = totalIncome;
+// Calculates the remaining income from total income
+function calculateLeftoverIncome(monthIndex) {
+  let totalIncome = parseFloat(currentStorage.months[monthIndex].monthlyIncome);
 
-  for (i = 0; i < currentStorage.months[monthIndex].amount.length; i++) {
-    leftover -= parseFloat(currentStorage.months[monthIndex].amount[i]);
+  // if the first value is a null, it prevents the data from being subtracted
+  if (isNullPresent(monthIndex)) {
+    console.log("invalid data");
+  } else {
+    let leftover = totalIncome;
+
+    for (i = 0; i < currentStorage.months[monthIndex].amount.length; i++) {
+      leftover -= parseFloat(currentStorage.months[monthIndex].amount[i]);
+    }
+
+    currentStorage.months[monthIndex].leftoverIncome = leftover;
+    localStorage.setItem("currentStorage", JSON.stringify(currentStorage));
   }
-
-  currentStorage.months[monthIndex].leftoverIncome = leftover;
 }
 
 function addCurrentValue(monthIndex) {
+  let totalIncome = parseFloat(currentStorage.months[monthIndex].monthlyIncome);
+
   categorySelected = financeCategory.value;
 
   if (categorySelected === "income") {
@@ -231,13 +237,13 @@ function addCurrentValue(monthIndex) {
 
     totalIncome += parseFloat(financeAmount.value);
 
-    calculateLeftoverIncome();
+    calculateLeftoverIncome(monthIndex);
 
     currentStorage.months[monthIndex].monthlyIncome = totalIncome;
 
     localStorage.setItem("currentStorage", JSON.stringify(currentStorage));
 
-    createChart();
+    createCurrentChart(monthIndex);
   } else {
     currentStorage.months[monthIndex].amount.push(financeAmount.value);
     currentStorage.months[monthIndex].color.push(financeColor.value);
@@ -246,15 +252,15 @@ function addCurrentValue(monthIndex) {
       financeDescription.value
     );
 
-    calculateLeftoverIncome();
+    calculateLeftoverIncome(monthIndex);
 
     localStorage.setItem("currentStorage", JSON.stringify(currentStorage));
   }
 
-  createChart();
+  createCurrentChart(monthIndex);
 }
 
-function addFinance() {
+function addFinance(monthIndex) {
   if (isNullPresent(monthIndex)) {
     removeInitialValue(monthIndex);
     addCurrentValue(monthIndex);
@@ -262,7 +268,7 @@ function addFinance() {
     addCurrentValue(monthIndex);
   }
 
-  createChart();
+  createCurrentChart(monthIndex);
 
   location.reload();
 }
@@ -274,7 +280,7 @@ function clearFinanceTable() {
 }
 
 // Populate Finance Table
-function createFinanceTable() {
+function createFinanceTable(monthIndex) {
   rowCount = 0;
 
   for (i = 0; i < currentStorage.months[monthIndex].income.length; i++) {
@@ -343,12 +349,14 @@ let currentChart = new Chart(currentFinances, {
   },
 });
 
-function createChart() {
+function createCurrentChart(monthIndex) {
   let chartColor = [];
   let chartAmount = [];
   let chartLabel = [];
 
-  calculateLeftoverIncome();
+  let leftover = parseFloat(currentStorage.months[monthIndex].leftoverIncome);
+
+  calculateLeftoverIncome(monthIndex);
 
   if (leftover > 0) {
     chartColor = currentStorage.months[monthIndex].color.map((color) => {
@@ -365,7 +373,7 @@ function createChart() {
     chartAmount.push(leftover);
     chartLabel.push("leftover income");
   } else if (leftover < 0) {
-    let posleftover = -leftover;
+    let posLeftover = -leftover;
 
     chartColor = currentStorage.months[monthIndex].color.map((color) => {
       return color;
@@ -378,7 +386,7 @@ function createChart() {
     });
 
     chartColor.push("#000000");
-    chartAmount.push(posleftover);
+    chartAmount.push(posLeftover);
     chartLabel.push("negative income");
   } else {
     chartColor = currentStorage.months[monthIndex].color;
@@ -397,45 +405,3 @@ function getRowIndex(element) {
   let row = element.closest("tr");
   return Array.from(row.parentNode.children).indexOf(row);
 }
-
-let incomeLength = currentStorage.months[monthIndex].income.length;
-
-document.querySelector("table").addEventListener("click", function (event) {
-  if (event.target.classList.contains("deleteFinance")) {
-    let rowIndex = getRowIndex(event.target);
-
-    if (rowIndex <= incomeLength) {
-      rowIndex = rowIndex - 1;
-
-      let removedIncome = parseFloat(
-        currentStorage.months[monthIndex].income[rowIndex]
-      );
-
-      leftover -= removedIncome;
-      totalIncome -= removedIncome;
-
-      currentStorage.months[monthIndex].leftoverIncome = leftover;
-      currentStorage.months[monthIndex].monthlyIncome = totalIncome;
-
-      currentStorage.months[monthIndex].income.splice(rowIndex, 1);
-      currentStorage.months[monthIndex].incomeDescription.splice(rowIndex, 1);
-
-      localStorage.setItem("currentStorage", JSON.stringify(currentStorage));
-    } else {
-      indexPosition = rowIndex - incomeLength - 1;
-
-      currentStorage.months[monthIndex].amount.splice(indexPosition, 1);
-      currentStorage.months[monthIndex].color.splice(indexPosition, 1);
-      currentStorage.months[monthIndex].category.splice(indexPosition, 1);
-      currentStorage.months[monthIndex].description.splice(indexPosition, 1);
-
-      localStorage.setItem("currentStorage", JSON.stringify(currentStorage));
-    }
-  }
-
-  currentChart.update();
-  clearFinanceTable();
-  createFinanceTable();
-
-  location.reload();
-});
