@@ -1,19 +1,20 @@
 document.addEventListener("DOMContentLoaded", function () {
-  createCurrentChart();
+  createChart();
   createFinanceTable();
 });
 
 addFinanceButton.addEventListener("click", function () {
-  for (let i = currentFinanceTable.rows.length - 1; i > 0; i--) {
-    currentFinanceTable.deleteRow(i);
-  }
-
-  addCurrentFinanceData();
-  createCurrentChart();
+  addFinance();
+  clearFinanceTable();
   createFinanceTable();
 });
 
 resetFinanceData.addEventListener("click", function () {
-  resetData();
-  createCurrentChart();
+  resetCurrentStorage();
+
+  createChart();
+
+  clearFinanceTable();
+
+  location.reload();
 });
