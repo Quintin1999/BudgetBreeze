@@ -33,6 +33,51 @@ let colorNames = [
   "light gray",
 ];
 
+function setMonthIndex(month) {
+  let monthIndex = "null";
+
+  switch (month) {
+    case "january":
+      monthIndex = 0;
+      break;
+    case "february":
+      monthIndex = 1;
+      break;
+    case "march":
+      monthIndex = 2;
+      break;
+    case "april":
+      monthIndex = 3;
+      break;
+    case "may":
+      monthIndex = 4;
+      break;
+    case "june":
+      monthIndex = 5;
+      break;
+    case "july":
+      monthIndex = 6;
+      break;
+    case "august":
+      monthIndex = 7;
+      break;
+    case "september":
+      monthIndex = 8;
+      break;
+    case "october":
+      monthIndex = 9;
+      break;
+    case "november":
+      monthIndex = 10;
+      break;
+    case "december":
+      monthIndex = 11;
+      break;
+  }
+
+  return monthIndex;
+}
+
 // Initialization data that insures all data is stored properly.
 let currentInitial = {
   months: [
@@ -174,23 +219,20 @@ let currentInitial = {
 // Initializes local storage and grabs all local storage.
 let currentStorage = JSON.parse(localStorage.getItem("currentStorage"));
 
-// Initializes local storage to initialized data if there is no data in local storage.
-if (currentStorage === null || currentStorage === "") {
-  localStorage.setItem("currentStorage", JSON.stringify(currentInitial));
-} else {
-}
-
 // Removes all local storage data and resets it to the initialized data.
 function resetCurrentStorage() {
   localStorage.removeItem("currentStorage");
   localStorage.setItem("currentStorage", JSON.stringify(currentInitial));
+  console.log("I made it here");
 }
 
 // Checks if the local storage data is the initialized data
-function isNullPresent(monthIndex) {
-  var month = currentStorage.months[monthIndex];
+function isNullPresent(month) {
+  let monthIndex = setMonthIndex(month);
 
-  if (month.description.includes("null")) {
+  var selectedMonth = currentStorage.months[monthIndex];
+
+  if (selectedMonth.description.includes("null")) {
     return true;
   } else {
     return false;
@@ -198,7 +240,9 @@ function isNullPresent(monthIndex) {
 }
 
 // Removes the filler initial data
-function removeInitialValue(monthIndex) {
+function removeInitialValue(month) {
+  let monthIndex = setMonthIndex(month);
+
   currentStorage.months[monthIndex].amount.splice(0, 1);
   currentStorage.months[monthIndex].color.splice(0, 1);
   currentStorage.months[monthIndex].category.splice(0, 1);
@@ -206,12 +250,12 @@ function removeInitialValue(monthIndex) {
 }
 
 // Calculates the remaining income from total income
-function calculateLeftoverIncome(monthIndex) {
+function calculateLeftoverIncome(month) {
+  let monthIndex = setMonthIndex(month);
   let totalIncome = parseFloat(currentStorage.months[monthIndex].monthlyIncome);
 
   // if the first value is a null, it prevents the data from being subtracted
-  if (isNullPresent(monthIndex)) {
-    console.log("invalid data");
+  if (isNullPresent(month)) {
   } else {
     let leftover = totalIncome;
 
@@ -224,7 +268,9 @@ function calculateLeftoverIncome(monthIndex) {
   }
 }
 
-function addCurrentValue(monthIndex) {
+function addCurrentValue(month) {
+  let monthIndex = setMonthIndex(month);
+
   let totalIncome = parseFloat(currentStorage.months[monthIndex].monthlyIncome);
 
   categorySelected = financeCategory.value;
@@ -237,13 +283,13 @@ function addCurrentValue(monthIndex) {
 
     totalIncome += parseFloat(financeAmount.value);
 
-    calculateLeftoverIncome(monthIndex);
+    calculateLeftoverIncome(month);
 
     currentStorage.months[monthIndex].monthlyIncome = totalIncome;
 
     localStorage.setItem("currentStorage", JSON.stringify(currentStorage));
 
-    createCurrentChart(monthIndex);
+    createCurrentChart(month);
   } else {
     currentStorage.months[monthIndex].amount.push(financeAmount.value);
     currentStorage.months[monthIndex].color.push(financeColor.value);
@@ -252,23 +298,25 @@ function addCurrentValue(monthIndex) {
       financeDescription.value
     );
 
-    calculateLeftoverIncome(monthIndex);
+    calculateLeftoverIncome(month);
 
     localStorage.setItem("currentStorage", JSON.stringify(currentStorage));
   }
 
-  createCurrentChart(monthIndex);
+  createCurrentChart(month);
 }
 
-function addFinance(monthIndex) {
-  if (isNullPresent(monthIndex)) {
-    removeInitialValue(monthIndex);
-    addCurrentValue(monthIndex);
+function addFinance(month) {
+  let monthIndex = setMonthIndex(month);
+
+  if (isNullPresent(month)) {
+    removeInitialValue(month);
+    addCurrentValue(month);
   } else {
-    addCurrentValue(monthIndex);
+    addCurrentValue(month);
   }
 
-  createCurrentChart(monthIndex);
+  createCurrentChart(month);
 
   location.reload();
 }
@@ -280,7 +328,9 @@ function clearFinanceTable() {
 }
 
 // Populate Finance Table
-function createFinanceTable(monthIndex) {
+function createFinanceTable(month) {
+  let monthIndex = setMonthIndex(month);
+
   rowCount = 0;
 
   for (i = 0; i < currentStorage.months[monthIndex].income.length; i++) {
@@ -349,14 +399,16 @@ let currentChart = new Chart(currentFinances, {
   },
 });
 
-function createCurrentChart(monthIndex) {
+function createCurrentChart(month) {
+  let monthIndex = setMonthIndex(month);
+
   let chartColor = [];
   let chartAmount = [];
   let chartLabel = [];
 
   let leftover = parseFloat(currentStorage.months[monthIndex].leftoverIncome);
 
-  calculateLeftoverIncome(monthIndex);
+  calculateLeftoverIncome(month);
 
   if (leftover > 0) {
     chartColor = currentStorage.months[monthIndex].color.map((color) => {
@@ -404,4 +456,58 @@ function createCurrentChart(monthIndex) {
 function getRowIndex(element) {
   let row = element.closest("tr");
   return Array.from(row.parentNode.children).indexOf(row);
+}
+
+function createHistoryChart(month) {
+  let monthIndex = setMonthIndex(month);
+
+  let chartColor = [];
+  let chartAmount = [];
+  let chartLabel = [];
+
+  let leftover = parseFloat(currentStorage.months[monthIndex].leftoverIncome);
+
+  calculateLeftoverIncome(month);
+
+  if (leftover > 0) {
+    chartColor = currentStorage.months[monthIndex].color.map((color) => {
+      return color;
+    });
+    chartAmount = currentStorage.months[monthIndex].amount.map((amount) => {
+      return amount;
+    });
+    chartLabel = currentStorage.months[monthIndex].category.map((category) => {
+      return category;
+    });
+
+    chartColor.push("#808080");
+    chartAmount.push(leftover);
+    chartLabel.push("leftover income");
+  } else if (leftover < 0) {
+    let posLeftover = -leftover;
+
+    chartColor = currentStorage.months[monthIndex].color.map((color) => {
+      return color;
+    });
+    chartAmount = currentStorage.months[monthIndex].amount.map((amount) => {
+      return amount;
+    });
+    chartLabel = currentStorage.months[monthIndex].category.map((category) => {
+      return category;
+    });
+
+    chartColor.push("#000000");
+    chartAmount.push(posLeftover);
+    chartLabel.push("negative income");
+  } else {
+    chartColor = currentStorage.months[monthIndex].color;
+    chartAmount = currentStorage.months[monthIndex].amount;
+    chartLabel = currentStorage.months[monthIndex].category;
+  }
+
+  historyChart.data.datasets[0].backgroundColor = chartColor;
+  historyChart.data.datasets[0].data = chartAmount;
+  historyChart.data.labels = chartLabel;
+
+  historyChart.update();
 }

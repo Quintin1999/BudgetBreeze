@@ -1,31 +1,29 @@
-let monthIndex = 0;
+let month = "january";
 
 document.addEventListener("DOMContentLoaded", function () {
-  createCurrentChart(monthIndex);
-  createFinanceTable(monthIndex);
+  createCurrentChart(month);
+  createFinanceTable(month);
 
   console.log(currentStorage);
 });
 
 addFinanceButton.addEventListener("click", function () {
-  addFinance(monthIndex);
+  addFinance(month);
 
-  clearFinanceTable(monthIndex);
-
-  createFinanceTable(monthIndex);
+  clearFinanceTable();
+  createFinanceTable(month);
 });
 
 resetFinanceData.addEventListener("click", function () {
-  resetCurrentStorage(monthIndex);
+  resetCurrentStorage();
 
-  createCurrentChart(monthIndex);
-
-  clearFinanceTable(monthIndex);
-
-  location.reload();
+  createCurrentChart(month);
+  clearFinanceTable();
 });
 
 document.querySelector("table").addEventListener("click", function (event) {
+  let monthIndex = setMonthIndex(month);
+
   let leftover = parseFloat(currentStorage.months[monthIndex].leftoverIncome);
   let incomeLength = currentStorage.months[monthIndex].income.length;
   let totalIncome = parseFloat(currentStorage.months[monthIndex].monthlyIncome);
@@ -64,7 +62,7 @@ document.querySelector("table").addEventListener("click", function (event) {
 
   currentChart.update();
   clearFinanceTable();
-  createFinanceTable();
+  createFinanceTable(month);
 
   location.reload();
 });
