@@ -1,81 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <title>Dashboard</title>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width" />
-  <link rel="stylesheet" href="styles.css" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-</head>
-<body>
-<nav>
-  <a href="/" aria-current="page">login</a>
-  <a href="/dashboard.html">Dashboard</a>
-  <a href="/current.html">Current Budget</a>
-  <a href="/history.html">Budget History</a>
-</nav>
-<main>
-  <hr>
-  <p>Current Monthly Budget</p>
-  <canvas id="myChart1" width="400" height="400"></canvas>
-  <p>Click on the above chart to create a new budget</p>
-  <br>
-  <hr>
-  <br>
-  <p>Past Months Budget History</p>
-  <canvas id="myChart2" width="400" height="400"></canvas>
-  <p>Click on the above chart to view past budgets</p>
-  <hr>
-</main>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    let chartDataWithColors = JSON.parse(localStorage.getItem('currentChartDataWithColors')) || [];
-
-    let chartData = chartDataWithColors.map(item => item.data);
-      let chartColors = chartDataWithColors.map(item => item.color);
-    // Empty data for the charts
-    let emptyData = {
-      labels: [],
-      datasets: [{
-        data: [],
-        backgroundColor: [],
-        hoverBackgroundColor: []
-      }]
-    };
-
-    // Create Chart 1 with empty data
-    let ctx = document.getElementById('myChart1').getContext('2d');
-      let chart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-          labels: [],
-          datasets: [{
-            data: chartData,
-            backgroundColor: chartColors,
-            hoverBackgroundColor: chartColors
-          }]
-        }
-      });
-
-    // Create Chart 2 with empty data
-    let ctx2 = document.getElementById('myChart2').getContext('2d');
-    let chart2 = new Chart(ctx2, {
-      type: 'pie',
-      data: emptyData
-    });
-
-    // Navigate to another page when Chart 1 is clicked
-    document.getElementById('myChart1').onclick = function() {
-      window.location.href = 'current.html'; // Replace 'page3.html' with the desired page URL
-    };
-
-    // Navigate to another page when Chart 2 is clicked
-    document.getElementById('myChart2').onclick = function() {
-      window.location.href = 'history.html'; // Replace 'page4.html' with the desired page URL
-    };
-  });
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-</body>
+  <head>
+    <title>Dashboard</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+  </head>
+  <body>
+    <nav>
+      <a href="/">login</a>
+      <a href="/dashboard.html">Dashboard</a>
+      <a href="/current.html">Current Budget</a>
+      <a href="/history.html">Budget History</a>
+    </nav>
+    <main>
+      <p>Current Monthly Budget</p>
+      <canvas id="current-finances" width="100px"></canvas>
+      <br />
+      <p>Past Months Budget History</p>
+      <canvas id="budget-finances" width="100px"></canvas>
+    </main>
+    <script src="chart.js"></script>
+    <script src="dashboard.js"></script>
+  </body>
 </html>
