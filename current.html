@@ -12,23 +12,23 @@
       crossorigin="anonymous"
     />
   </head>
-  <body>
+  <main>
     <nav>
-      <a href="/">login</a>
       <a href="/dashboard.html">Dashboard</a>
       <a href="/current.html">Current Budget</a>
       <a href="/history.html">Budget History</a>
     </nav>
-    <main>
+    <br>
       <canvas
         id="current-finances"
         max-width="300px"
         width="30%"
         height="30%"
       ></canvas>
-      <p>Please enter your monthly income as your first data point</p>
+      <br/>
       <div class="mt-3">
         <label for="finance-amount">Add Data:</label>
+        <br/>
         <input type="number" name="financeInput" id="finance-amount" />
         <select name="financeInput" id="finance-color">
           <option value="#9FDDFF">Light Blue</option>
@@ -52,7 +52,10 @@
           id="finance-description"
           placeholder="Add description"
         />
+        </div>
+        <br/>
         <button id="addFinance">Add Data</button>
+        <br/>
         <button id="resetData">Reset All Data</button>
       </div>
 

@@ -289,7 +289,7 @@ function addCurrentValue(month) {
 
     localStorage.setItem("currentStorage", JSON.stringify(currentStorage));
 
-    createCurrentChart(month);
+    createCurrentChart(month, currentChart);
   } else {
     currentStorage.months[monthIndex].amount.push(financeAmount.value);
     currentStorage.months[monthIndex].color.push(financeColor.value);
@@ -303,12 +303,10 @@ function addCurrentValue(month) {
     localStorage.setItem("currentStorage", JSON.stringify(currentStorage));
   }
 
-  createCurrentChart(month);
+  createCurrentChart(month, currentChart);
 }
 
 function addFinance(month) {
-  let monthIndex = setMonthIndex(month);
-
   if (isNullPresent(month)) {
     removeInitialValue(month);
     addCurrentValue(month);
@@ -316,7 +314,7 @@ function addFinance(month) {
     addCurrentValue(month);
   }
 
-  createCurrentChart(month);
+  createCurrentChart(month, currentChart);
 
   location.reload();
 }
